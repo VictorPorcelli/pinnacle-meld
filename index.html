@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: darkred;
+      overflow-y: scroll;
+    }
+
+    .expand-button {
+      width: 220px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 0 auto; /* Center the button horizontally */
+    }
+
+    .expand-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out;
+    }
+
+    .expand-content.show {
+      max-height: 200px; /* Adjust as needed */
+    }
+
+    #score-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+  </style>
+</head>
+<body>
+
+<h3 style="position: absolute; top: 0; left: 5px; color: white;">Books and Marriages</h3>
+<button style="position: absolute; top: 45px; left: 5px;" class="expand-button" onclick="toggleExpand(1, 15)">Book in Trump</button>
+<div class="expand-content" id="expand-content-1" style="position: absolute; top: 40px; left: 230px; color: white;">
+  <p>A, 10, K, Q, J of the same suit.</p>
+</div>
+
+<button style="position: absolute; top: 95px; left: 5px;" class="expand-button" onclick="toggleExpand(2, 4)">Royal Marriage</button>
+<div class="expand-content" id="expand-content-2" style="position: absolute; top: 90px; left: 230px; color: white;">
+  <p>K and Q of the Trump suit.</p>
+</div>
+
+<button style="position: absolute; top: 145px; left: 5px;" class="expand-button" onclick="toggleExpand(3, 2)">Marriage</button>
+<div class="expand-content" id="expand-content-3" style="position: absolute; top: 140px; left: 230px; color: white;">
+  <p>K and Q of the same suit.</p>
+</div>
+
+<button style="position: absolute; top: 195px; left: 5px;" class="expand-button" onclick="toggleExpand(4, 24)">Roundhouse</button>
+<div class="expand-content" id="expand-content-4" style="position: absolute; top: 190px; left: 230px; color: white;">
+  <p>Marriage in all 4 suits.</p>
+</div>
+
+<h3 style="position: absolute; top: 225px; left: 5px; color: white;">Pinochles</h3>
+<button style="position: absolute; top: 275px; left: 5px;" class="expand-button" onclick="toggleExpand(5, 4)">Pinochle</button>
+<div class="expand-content" id="expand-content-5" style="position: absolute; top: 275px; left: 230px; color: white;">
+  <p>Q of spades and J of diamonds.</p>
+</div>
+
+<button style="position: absolute; top: 325px; left: 5px;" class="expand-button" onclick="toggleExpand(6, 8)">Double Pinochle (<4)</button>
+<div class="expand-content" id="expand-content-6" style="position: absolute; top: 320px; left: 230px; color: white;">
+  <p>Two Q of spades and two J of diamonds.</p>
+</div>
+
+<button style="position: absolute; top: 375px; left: 5px;" class="expand-button" onclick="toggleExpand(7, 30)">Double Pinochle (4+)</button>
+<div class="expand-content" id="expand-content-7" style="position: absolute; top: 370px; left: 230px; color: white;">
+  <p>Two Q of spades and two J of diamonds.</p>
+</div>
+
+<h3 style="position: absolute; top: 400px; left: 5px; color: white;">Arounds</h3>
+<button style="position: absolute; top: 450px; left: 5px;" class="expand-button" onclick="toggleExpand(8, 10)">Aces Around</button>
+<div class="expand-content" id="expand-content-8" style="position: absolute; top: 445px; left: 230px; color: white;">
+  <p>Ace of each suit.</p>
+</div>
+
+<button style="position: absolute; top: 500px; left: 5px;" class="expand-button" onclick="toggleExpand(9, 8)">Kings Around</button>
+<div class="expand-content" id="expand-content-9" style="position: absolute; top: 495px; left: 230px; color: white;">
+  <p>K of each suit.</p>
+</div>
+
+<button style="position: absolute; top: 550px; left: 5px;" class="expand-button" onclick="toggleExpand(10, 6)">Queens Around</button>
+<div class="expand-content" id="expand-content-10" style="position: absolute; top: 545px; left: 230px; color: white;">
+  <p>Q of each suit.</p>
+</div>
+
+<button style="position: absolute; top: 600px; left: 5px;" class="expand-button" onclick="toggleExpand(11, 4)">Jacks Around</button>
+<div class="expand-content" id="expand-content-11" style="position: absolute; top: 595px; left: 230px; color: white;">
+  <p>J of each suit.</p>
+</div>
+
+<h3 style="position: absolute; top: 625px; left: 5px; color: white;">Other</h3>
+<button style="position: absolute; top: 675px; left: 5px;" class="expand-button" onclick="toggleExpand(12, 1)" id="btn">9 of Trump<span id="btn-counter"></span></button>
+<div class="expand-content" id="expand-content-12" style="position: absolute; top: 670px; left: 230px; color: white;">
+  <p>9 of Trump.</p>
+</div>
+
+<div id="score-container">Score: <span id="score">0</span></div>
+
+<script>
+  let score = 0;
+
+  function toggleExpand(buttonNumber, value) {
+    const expandContent = document.getElementById(`expand-content-${buttonNumber}`);
+
+    // Check if the content is currently visible
+    if (!expandContent.classList.contains('show')) {
+      // First click: Show content, add value to the score
+      expandContent.classList.add('show');
+      score += value;
+    } else if (expandContent.style.fontWeight !== 'bold') {
+      // Second click: Do not show content, add value to the score, highlight in green
+      expandContent.style.fontWeight = 'bold';
+      score += value;
+    } else {
+      // Third click: Show content, subtract double the value from the score, reset styles
+      expandContent.classList.remove('show');
+      score -= value * 2;
+      expandContent.style.fontWeight = '';
+    }
+
+    /*
+    expandContent.classList.toggle('show');
+
+    // Update the score based on the button click
+    if (expandContent.classList.contains('show')) {
+      score += value;
+    } else {
+      score -= value;
+    }
+    */
+
+    // Update the score display
+    document.getElementById('score').innerText = score;
+  }
+</script>
+
+</body>
+</html>
