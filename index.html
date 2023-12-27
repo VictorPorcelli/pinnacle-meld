@@ -120,27 +120,52 @@
   <p>9 of Trump.</p>
 </div>
 
+<div style="margin-bottom: 5px"></div>
+
 <div id="score-container">Score: <span id="score">0</span></div>
 
 <script>
   let score = 0;
+  let marriageScore = 0
 
   function toggleExpand(buttonNumber, value) {
     const expandContent = document.getElementById(`expand-content-${buttonNumber}`);
+
+    // book, roundhouse, double pinochle, 
+    var oneTimeValues = [1, 4, 6, 7];
+    // marriage (max without a roundhouse is 7)
+    if(buttonNumber == 3){
+      marriageScore += value
+    }
 
     // Check if the content is currently visible
     if (!expandContent.classList.contains('show')) {
       // First click: Show content, add value to the score
       expandContent.classList.add('show');
       score += value;
+      // Skip to third click if its a one-time value
+      if(oneTimeValues.includes(buttonNumber)){
+        expandContent.style.fontWeight = 'bold';
+      }
     } else if (expandContent.style.fontWeight !== 'bold') {
-      // Second click: Do not show content, add value to the score, highlight in green
-      expandContent.style.fontWeight = 'bold';
+      if(buttonNumber != 3 || marriageScore == 10){
+        // Second click: Do not show content, add value to the score, highlight in green
+        expandContent.style.fontWeight = 'bold';
+      }
       score += value;
     } else {
-      // Third click: Show content, subtract double the value from the score, reset styles
+      // Third click: Show content, subtract value from the score, reset styles
       expandContent.classList.remove('show');
-      score -= value * 2;
+      // Only subtract one if its a one-time value, otherwise subtract two
+      if(oneTimeValues.includes(buttonNumber)){
+        score -= value
+      }else if(buttonNumber == 3){
+        score -= 10
+        marriageScore = 0
+      }
+      else{
+        score -= value * 2;
+      }
       expandContent.style.fontWeight = '';
     }
 
